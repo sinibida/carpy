@@ -1,13 +1,23 @@
 <script lang="ts">
   import { appWindow } from '@tauri-apps/api/window';
   import { onMount } from 'svelte';
+  import * as ms from '../stores/mainStores';
 
   let maximized = false;
+  let isWindowed = false;
+  let title: string | null = null;
   $: onMaximizedChange(maximized)
 
   onMount(async () => {
     await appWindow.listen('tauri://resize', async () => {
       maximized = await appWindow.isMaximized()
+    })
+
+    if (window.__TAURI_METADATA__) isWindowed = true;
+    else isWindowed = false;
+
+    ms.title.subscribe((x) => {
+      title = x;
     })
   })
 
@@ -41,20 +51,25 @@ class="g-elevated header"
   <div class="title">
     🍠
     Carpy
+    {#if title}
+      ({title})
+    {/if}
     <div data-tauri-drag-region class="dragging-area">
 
     </div>
   </div>
   <div class="right">
-    <button class="icon-button" on:click={onMinimizeClick}>
-      <i class="mi">minimize</i>
-    </button>
-    <button class="icon-button" on:click={onMaximizeClick}>
-      <i class="mi">maximize</i>
-    </button>
-    <button class="icon-button" on:click={onCloseClick}>
-      <i class="mi">close</i>
-    </button>
+    {#if isWindowed}
+      <button class="icon-button" on:click={onMinimizeClick}>
+        <i class="mi">minimize</i>
+      </button>
+      <button class="icon-button" on:click={onMaximizeClick}>
+        <i class="mi">maximize</i>
+      </button>
+      <button class="icon-button" on:click={onCloseClick}>
+        <i class="mi">close</i>
+      </button>
+    {/if}
   </div>
 </div>
 
