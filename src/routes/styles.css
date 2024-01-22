@@ -1,0 +1,45 @@
+@import '@fontsource-variable/montserrat';
+@import '@fontsource/material-icons';
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+html {
+	--ui-1: #242424;
+	--ui-2: #3d3d3d;
+	--ui-accent: gold;
+}
+
+html {
+	&.rounded {
+		border-radius: 8px;
+	}
+
+	mask-image: -webkit-radial-gradient(white, black);
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+body {
+	font-family: 'Montserrat Variable', sans-serif;
+	color: white;
+}
+
+input, button {
+	font-family: inherit;
+	color: inherit;
+}
+
+.g-elevated {
+    box-shadow: #0008 0px 0px 8px;
+}
+
+i.mi {
+	font-style: normal;
+	font-family: 'Material Icons', sans-serif;
+}
