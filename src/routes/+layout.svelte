@@ -107,6 +107,7 @@ class="g-elevated header"
     position: relative;
     background-color: var(--ui-2);
     height: 32px;
+    min-height: 32px;
 
     & .left {
       position: absolute;

@@ -1,8 +1,12 @@
 <script lang="ts">
+  import { loadSvelteConfig } from "@sveltejs/vite-plugin-svelte";
   import MessageList from "./MessageList.svelte";
   import MessagePusher from "./MessagePusher.svelte";
+  // import { pb } from "../api/pocketBasePresenter";
 
   export let channel: Channel;
+
+  let loadedMessages: LocalMessage[] | null = null;
   
   function push(message: LocalMessage) {
     channel.messages.push(message)
@@ -17,11 +21,21 @@
       content
     })
   }
+
+  // async function getMessages() {
+  //   pb.collection('messages').getList(1, 20, {
+  //     filter: ''
+  //   })
+  // }
 </script>
 
 <div class="content">
-  {#key channel.messages}
-    <MessageList messages={channel.messages}/>
+  {#key loadedMessages}
+    {#if loadedMessages}
+      <MessageList messages={loadedMessages}/>
+    {:else}
+      Loading...
+    {/if}
   {/key}
 </div>
 <MessagePusher on:push={onPushListen}/>
@@ -32,6 +46,5 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 8px;
   }
 </style>

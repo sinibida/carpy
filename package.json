@@ -27,7 +27,6 @@
 	"dependencies": {
 		"@fontsource-variable/montserrat": "^5.0.17",
 		"@fontsource/material-icons": "^5.0.11",
-		"@tauri-apps/api": "^1.5.3",
-		"sqlite3": "^5.1.7"
+		"@tauri-apps/api": "^1.5.3"
 	}
 }
