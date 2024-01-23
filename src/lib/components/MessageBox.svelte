@@ -34,7 +34,7 @@ class:others={!fromSelf}
       flex-direction: row-reverse;
       & .container {
         background-color: var(--ui-2);
-        color: white;
+        color: var(--on-ui);
       }
     }
 
@@ -42,7 +42,7 @@ class:others={!fromSelf}
       flex-direction: row;
       & .container {
         background-color: var(--ui-accent);
-        color: black;
+        color: var(--on-accent);
       }
     }
   }

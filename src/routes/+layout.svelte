@@ -1,12 +1,12 @@
 <script lang="ts">
   import { appWindow } from '@tauri-apps/api/window';
   import { onMount } from 'svelte';
-  import * as ms from '../stores/mainStores';
+  import * as ms from '../lib/stores/mainStores';
   import './styles.css'
   import UserModal from '$lib/components/UserModal.svelte';
+  import { isWindowed } from '$lib/utils';
 
   let maximized = false;
-  let isWindowed = false;
   let title: string | null = null;
   $: onMaximizedChange(maximized)
 
@@ -14,9 +14,6 @@
     await appWindow.listen('tauri://resize', async () => {
       maximized = await appWindow.isMaximized()
     })
-
-    if (window.__TAURI_METADATA__) isWindowed = true;
-    else isWindowed = false;
 
     ms.title.subscribe((x) => {
       title = x;
@@ -62,7 +59,7 @@ class="g-elevated header"
     <UserModal/>
   </div>
   <div class="right">
-    {#if isWindowed}
+    {#if isWindowed()}
       <button class="g-icon-button" on:click={onMinimizeClick}>
         <i class="mi">minimize</i>
       </button>
@@ -89,6 +86,7 @@ class="g-elevated header"
     flex: 1;
     background-color: var(--ui-1);
     display: flex;
+    position: relative;
   }
 
   .close-button:hover {

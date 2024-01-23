@@ -1,7 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
   import { logout } from "$lib/utils/pocketBasePresenter";
-  import { loggedUser } from "../../stores/mainStores";
+  import { loggedUser } from "../stores/mainStores";
 
   let expand = false;
 

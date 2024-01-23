@@ -20,8 +20,11 @@ html {
 	--ui-1: #242424;
 	--ui-2: #3d3d3d;
 	--ui-3: #565656;
+	--ui-invert: #efefef;
 	--ui-accent: gold;
 	--ui-error: crimson;
+	--on-ui: #efefef;
+	--on-accent: #131313;
 }
 
 html {
@@ -41,7 +44,7 @@ body {
 
 body {
 	font-family: 'Montserrat Variable', sans-serif;
-	color: white;
+	color: var(--on-ui);
 }
 
 input, button {
@@ -54,8 +57,8 @@ input {
 	border-radius: 1000px;
 	outline: none;
 	padding: 8px 16px;
-	color: black;
-	background: white;
+	color: var(--on-accent);
+	background: var(--ui-invert);
 
 	&:-webkit-autofill::first-line {
 	  font-family: inherit;
@@ -83,12 +86,16 @@ i.mi {
 	outline: none;
 	padding: 8px 16px;
 	background-color: var(--ui-accent);
-	color: black;
+	color: var(--on-accent);
 	transform: scale(1.0);
 	transition: 
 		transform 50ms ease,
 		filter 100ms ease,
 		opacity 100ms ease;
+
+	&.gb-plain {
+		background-color: var(--on-ui)
+	}
 
 	&:hover {
 		transform: scale(1.05);
@@ -106,7 +113,7 @@ i.mi {
 }
 
 .g-elevated {
-    box-shadow: #0008 0px 0px 8px;
+    box-shadow: #0004 0px 0px 8px;
 }
 
 .g-icon-button {
@@ -127,8 +134,8 @@ i.mi {
   }
 }
 .g-icon-button:hover {
-  background: #fff4;
+  background: color-mix(in srgb, var(--on-ui) 25%, transparent);
 }
 .g-icon-button:active {
-  background: #fff8;
+  background: color-mix(in srgb, var(--on-ui) 50%, transparent);
 }

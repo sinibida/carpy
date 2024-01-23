@@ -1,5 +1,5 @@
 import PocketBase, { type AuthModel, type RecordAuthResponse, type RecordModel, type RecordSubscription, type UnsubscribeFunc } from 'pocketbase';
-import { loggedUser } from '../../stores/mainStores';
+import { loggedUser } from '../stores/mainStores';
 import { get } from 'svelte/store';
 
 export const pb = new PocketBase(`http://127.0.0.1:8090`);
@@ -21,6 +21,12 @@ export async function getMessagesFromChannel(channelId: string): Promise<Message
     })
 
     return records.items;
+}
+
+export async function createChannel(channel: Local<Channel>): Promise<void> {
+    await pb.collection('channels').create(
+        channel
+    )
 }
 
 export async function createMessageToChannel(message: Local<Message>): Promise<void> {
@@ -50,11 +56,11 @@ export async function login(username: string, password: string): Promise<RecordA
     import.meta.env
     try {
         const res = await pb.collection('users').authWithPassword(username, password)
-        console.log('login complete:', res);
+        //console.log('login complete:', res);
         loggedUser.set(pb.authStore.model as User);
         return res;
     } catch (e) {
-        console.dir(e)
+        //console.dir(e)
         throw e;
     }
 }

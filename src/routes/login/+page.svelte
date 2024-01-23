@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { login } from '../../lib/utils/pocketBasePresenter';
-  import { loggedUser } from '../../stores/mainStores';
+  import { loggedUser } from '../../lib/stores/mainStores';
 
   let username: string;
   let password: string;
@@ -88,7 +88,7 @@
 
   .login-error {
     background-color: var(--ui-error);
-    color: white;
+    color: var(--on-ui);
     border-radius: 8px;
     padding: 16px;
     font-size: small;

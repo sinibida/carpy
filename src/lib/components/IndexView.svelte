@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { loggedUser } from "../../stores/mainStores";
+  import { loggedUser } from "../stores/mainStores";
 
   let username: string | undefined = undefined;
 
@@ -31,6 +31,7 @@
     justify-content: center;
     height: 100%;
     flex-direction: column;
+    user-select: none;
 
     opacity: 25%;
     filter: grayscale();
@@ -38,7 +39,6 @@
     & .foods {
       font-size: 104px;
       text-align: center;
-      user-select: none;
     }
 
     & .welcome {

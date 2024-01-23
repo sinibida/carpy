@@ -1,10 +1,13 @@
 <script lang="ts">
   import ChannelView from "$lib/components/ChannelView.svelte";
   import IndexView from "$lib/components/IndexView.svelte";
-  import {title, loggedUser}  from '../stores/mainStores'
+  import ModalView from "$lib/components/ModalView.svelte";
+  import {title, loggedUser}  from '../lib/stores/mainStores'
   import { onMount } from "svelte";
-  import { getAllChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
+  import { createChannel, getAllChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
   import { goto } from '$app/navigation';
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import { currentModal, showModal } from "$lib/stores/modalStores";
 
   let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
@@ -15,35 +18,50 @@
       goto("/login");
       return;
     }
-    channels = await getAllChannels();
+    await reloadChannels();
   })
 
-  function onChangeChannelClicked(channel: Channel | null) {
+  async function reloadChannels() {
+    channels = await getAllChannels();
+  }
+
+  function onChangeChannelClicked(event: CustomEvent<Channel | null>) {
+    const channel = event.detail
     currentChannel = channel
     $title = channel?.title || null;
+  }
+
+  function onAddChannelClicked() {
+    showModal({
+      content: `
+      <input name="title" type="text">
+      `,
+      header: "Create Channel",
+      submitText: 0,
+    }).then(async (x) => {
+      if (x.type === 'sumbitted') {
+        await createChannel({
+          title: x.value.title,
+        })
+        await reloadChannels()
+      }
+    })
   }
 </script>
 
 <svelte:head>
-  <title>Home</title>
+  <title>
+    Carpy
+  </title>
   <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section class="sidebar g-elevation">
-  <button on:click={() => onChangeChannelClicked(null)}>
-    <i class="mi">home</i>
-  </button>
-  {#key channels}
-    {#if channels}
-      {#each channels as channel}
-        <button on:click={() => onChangeChannelClicked(channel)}>
-          {channel.title[0] + channel.title[channel.title.length - 1]}
-        </button>
-      {/each}
-    {:else}
-      loading...
-    {/if}
-  {/key}
+<section class="sidebar g-elevated">
+  <Sidebar
+  {channels}
+  on:changeChannel={onChangeChannelClicked}
+  on:addChannel={onAddChannelClicked}
+  />
 </section>
 <section class="content">
   {#key currentChannel}
@@ -54,23 +72,15 @@
   {/if}
   {/key}
 </section>
+<section class="modal">
+  <ModalView/>
+</section>
 
 <style>
   .sidebar {
     width: 64px;
     background-color: var(--ui-2);
     z-index: 500;
-    display: flex;
-    flex-direction: column;
-
-    & button {
-      user-select: none;
-      width: 64px;
-      height: 64px;
-      color: black;
-      font-weight: bold;
-      font-size: x-large;
-    }
   }
 
   .content {
@@ -78,5 +88,15 @@
     flex-direction: column;
     height: 100%;
     flex: 1;
+  }
+
+  .modal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    pointer-events: none;
   }
 </style>

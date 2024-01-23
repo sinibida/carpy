@@ -3,7 +3,7 @@
   import MessagePusher from "./MessagePusher.svelte";
   import { createMessageToChannel, getMessagesFromChannel, subscribeToChannel } from "../utils/pocketBasePresenter";
   import { onDestroy, onMount } from "svelte";
-  import { loggedUser } from "../../stores/mainStores";
+  import { loggedUser } from "../stores/mainStores";
   import { get } from "svelte/store";
 
   export let channel: Channel;
