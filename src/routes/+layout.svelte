@@ -2,6 +2,7 @@
   import { appWindow } from '@tauri-apps/api/window';
   import { onMount } from 'svelte';
   import * as ms from '../stores/mainStores';
+  import './styles.css'
 
   let maximized = false;
   let isWindowed = false;

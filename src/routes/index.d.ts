@@ -1,4 +1,4 @@
-type Local<T> = Omit<T, 'id'>
+type Local<T> = Omit<Omit<T, 'id'>, 'creator'>
 
 type Message = {
     id: string,
@@ -12,4 +12,10 @@ type MessageContent = string
 type Channel = {
     id: string,
     title: string,
+}
+
+type User = {
+    id: string,
+    username: string,
+    email: string,
 }

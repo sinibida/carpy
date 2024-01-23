@@ -20,6 +20,7 @@ html {
 	--ui-1: #242424;
 	--ui-2: #3d3d3d;
 	--ui-accent: gold;
+	--ui-error: crimson;
 }
 
 html {
@@ -45,6 +46,54 @@ body {
 input, button {
 	font-family: inherit;
 	color: inherit;
+}
+
+input {
+	border: none;
+	border-radius: 1000px;
+	outline: none;
+	padding: 8px 16px;
+	color: black;
+	background: white;
+
+	&:-webkit-autofill::first-line {
+	  font-family: inherit;
+	  font-size: 0.5em;
+	}
+}
+
+
+
+.g-bubble {
+	border: none;
+	border-radius: 1000px;
+	outline: none;
+	padding: 8px 16px;
+	background-color: var(--ui-accent);
+	color: black;
+	transform: scale(1.0);
+	transition: 
+		transform 50ms ease,
+		filter 100ms ease,
+		opacity 100ms ease;
+
+	&:hover {
+		transform: scale(1.05);
+		filter: brightness(1.1)
+	}
+
+	&:active {
+		transform: scale(0.975);
+		filter: brightness(0.7)
+	}
+
+	&:disabled {
+		opacity: 60%;
+	}
+}
+
+hr {
+	border: 1px solid var(--ui-2);
 }
 
 .g-elevated {

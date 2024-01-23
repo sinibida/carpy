@@ -1,15 +1,19 @@
 <script lang="ts">
-  import ChannelView from "$lib/ChannelView.svelte";
-  import IndexView from "$lib/IndexView.svelte";
-  import './styles.css'
-  import {title}  from '../stores/mainStores'
+  import ChannelView from "$lib/components/ChannelView.svelte";
+  import IndexView from "$lib/components/IndexView.svelte";
+  import {title, loggedUser}  from '../stores/mainStores'
   import { onMount } from "svelte";
-  import { getAllChannels } from "../api/pocketBasePresenter";
+  import { getAllChannels, getLoggedUser, logout } from "../lib/utils/pocketBasePresenter";
+  import { goto } from '$app/navigation';
 
   let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
 
   onMount(async () => {
+    if (getLoggedUser() === null) {
+      goto("/login");
+      return;
+    }
     channels = await getAllChannels();
   })
 

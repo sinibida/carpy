@@ -8,6 +8,9 @@
   let value: string;
 
   function onPush() {
+    if (value === "")
+      return;
+    
     dispatch('push', value);
     value = ""
   }
@@ -22,7 +25,7 @@
     on:keydown={event => {if (event.key === "Enter") onPush()}}
     />
     <button 
-    class="g-elevated"
+    class="g-elevated g-bubble"
     on:click={onPush}
     >
       Send
@@ -47,20 +50,6 @@
 
       & input {
         flex: 1;
-        border: none;
-        border-radius: 1000px;
-        outline: none;
-        padding: 0px 16px;
-        color: black;
-      }
-
-      & button {
-        border: none;
-        border-radius: 1000px;
-        outline: none;
-        padding: 0px 16px;
-        background-color: var(--ui-accent);
-        color: black;
       }
     }
   }

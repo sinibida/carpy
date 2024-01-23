@@ -1,15 +1,28 @@
 <script lang="ts">
   import MessageList from "./MessageList.svelte";
   import MessagePusher from "./MessagePusher.svelte";
-  import { createMessageToChannel, getMessagesFromChannel } from "../api/pocketBasePresenter";
-  import { onMount } from "svelte";
+  import { createMessageToChannel, getMessagesFromChannel, isMyId, subscribeToChannel } from "../utils/pocketBasePresenter";
+  import { onDestroy, onMount } from "svelte";
 
   export let channel: Channel;
 
   let loadedMessages: Message[] | null = null;
+
+  let unsubscribe: () => Promise<void>
   
   onMount(async () => {
     await reloadMessages();
+
+    unsubscribe = await subscribeToChannel(channel.id, (e) => {
+      // TODO: Naive Reaction
+      reloadMessages();
+    });
+    console.log("subed!", channel.title)
+  })
+
+  onDestroy(async () => {
+    await unsubscribe();
+    console.log("unsubed!", channel.title)
   })
 
   async function reloadMessages() {
@@ -27,7 +40,6 @@
     const content = event.detail;
     await push({
       channel: channel.id,
-      creator: 'vka9xdjd3sib7v0',
       content
     })
     await reloadMessages();
@@ -39,7 +51,7 @@
     {#if loadedMessages}
       <MessageList
       messages={loadedMessages}
-      fromSelfPredicate={(x) => x.creator === 'vka9xdjd3sib7v0'}
+      fromSelfPredicate={(x) => isMyId(x.creator)}
       />
     {:else}
       Loading...
