@@ -1,13 +1,19 @@
 <script lang="ts">
-  import { loadSvelteConfig } from "@sveltejs/vite-plugin-svelte";
   import MessageList from "./MessageList.svelte";
   import MessagePusher from "./MessagePusher.svelte";
-  // import { pb } from "../api/pocketBasePresenter";
+  import { getMessagesFromChannel } from "../api/pocketBasePresenter";
+  import { onMount } from "svelte";
 
   export let channel: Channel;
 
   let loadedMessages: LocalMessage[] | null = null;
   
+  onMount(async () => {
+    loadedMessages = await getMessagesFromChannel(
+      channel.id
+    )
+  })
+
   function push(message: LocalMessage) {
     channel.messages.push(message)
     channel.messages = channel.messages
@@ -17,16 +23,11 @@
     const content = event.detail;
     push({
       id: crypto.randomUUID(),
+      channelId: channel.id,
       fromSelf: true,
       content
     })
   }
-
-  // async function getMessages() {
-  //   pb.collection('messages').getList(1, 20, {
-  //     filter: ''
-  //   })
-  // }
 </script>
 
 <div class="content">

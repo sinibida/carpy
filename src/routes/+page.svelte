@@ -3,18 +3,15 @@
   import IndexView from "$lib/IndexView.svelte";
   import './styles.css'
   import {title}  from '../stores/mainStores'
+  import { onMount } from "svelte";
+  import { getAllChannels } from "../api/pocketBasePresenter";
 
-  let channels: Channel[] = [
-    {
-    title: "Channel 1",
-    messages: [],
-    },
-    {
-    title: "Channel 2",
-    messages: [],
-    },
-  ]
+  let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
+
+  onMount(async () => {
+    channels = await getAllChannels();
+  })
 
   function onChangeChannelClicked(channel: Channel | null) {
     currentChannel = channel
@@ -31,11 +28,17 @@
   <button on:click={() => onChangeChannelClicked(null)}>
     <i class="mi">home</i>
   </button>
-  {#each channels as channel}
-    <button on:click={() => onChangeChannelClicked(channel)}>
-      {channel.title[0] + channel.title[channel.title.length - 1]}
-    </button>
-  {/each}
+  {#key channels}
+    {#if channels}
+      {#each channels as channel}
+        <button on:click={() => onChangeChannelClicked(channel)}>
+          {channel.title[0] + channel.title[channel.title.length - 1]}
+        </button>
+      {/each}
+    {:else}
+      loading...
+    {/if}
+  {/key}
 </section>
 <section class="content">
   {#key currentChannel}

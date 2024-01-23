@@ -33,5 +33,7 @@
 		align-items: stretch;
     padding: 8px;
 		gap: 8px;
+    right: 0px;
+    left: 0px;
 	}
 </style>
