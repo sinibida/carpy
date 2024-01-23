@@ -1,7 +1,9 @@
-type LocalMessage = {
+type Local<T> = Omit<T, 'id'>
+
+type Message = {
     id: string,
-    fromSelf: boolean,
-    channelId: string,
+    creator: string,
+    channel: string,
     content: MessageContent,
 }
 
@@ -10,5 +12,4 @@ type MessageContent = string
 type Channel = {
     id: string,
     title: string,
-    messages: LocalMessage[],
 }

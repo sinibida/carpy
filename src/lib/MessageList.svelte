@@ -1,18 +1,17 @@
 <script lang="ts">
   import MessageBox from "./MessageBox.svelte";
 
-  export let messages: LocalMessage[] = []
+  export let fromSelfPredicate: 
+    (msg: Message) => boolean = 
+    () => false
+  export let messages: Message[] = []
 </script>
 
 <div class="root">
   <div class="message-list">
-    {#each messages as {
-      id,
-      fromSelf,
-      content,
-    }}
-      <MessageBox {fromSelf}>
-        {content}
+    {#each messages as message}
+      <MessageBox fromSelf={fromSelfPredicate(message)}>
+        {message.content}
       </MessageBox>
     {/each}
   </div>

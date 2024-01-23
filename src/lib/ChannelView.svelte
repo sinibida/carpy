@@ -1,39 +1,46 @@
 <script lang="ts">
   import MessageList from "./MessageList.svelte";
   import MessagePusher from "./MessagePusher.svelte";
-  import { getMessagesFromChannel } from "../api/pocketBasePresenter";
+  import { createMessageToChannel, getMessagesFromChannel } from "../api/pocketBasePresenter";
   import { onMount } from "svelte";
 
   export let channel: Channel;
 
-  let loadedMessages: LocalMessage[] | null = null;
+  let loadedMessages: Message[] | null = null;
   
   onMount(async () => {
+    await reloadMessages();
+  })
+
+  async function reloadMessages() {
+    loadedMessages = null
     loadedMessages = await getMessagesFromChannel(
       channel.id
     )
-  })
-
-  function push(message: LocalMessage) {
-    channel.messages.push(message)
-    channel.messages = channel.messages
   }
 
-  function onPushListen(event: CustomEvent<MessageContent>) {
+  async function push(message: Local<Message>) {
+    await createMessageToChannel(message)
+  }
+
+  async function onPushListen(event: CustomEvent<MessageContent>) {
     const content = event.detail;
-    push({
-      id: crypto.randomUUID(),
-      channelId: channel.id,
-      fromSelf: true,
+    await push({
+      channel: channel.id,
+      creator: 'vka9xdjd3sib7v0',
       content
     })
+    await reloadMessages();
   }
 </script>
 
 <div class="content">
   {#key loadedMessages}
     {#if loadedMessages}
-      <MessageList messages={loadedMessages}/>
+      <MessageList
+      messages={loadedMessages}
+      fromSelfPredicate={(x) => x.creator === 'vka9xdjd3sib7v0'}
+      />
     {:else}
       Loading...
     {/if}

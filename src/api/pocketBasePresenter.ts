@@ -1,4 +1,4 @@
-import PocketBase from 'pocketbase';
+import PocketBase, { type RecordModel } from 'pocketbase';
 
 export const pb = new PocketBase('http://127.0.0.1:8090');
 
@@ -11,19 +11,18 @@ export async function getAllChannels(): Promise<Channel[]> {
     }))
 }
 
-export async function getMessagesFromChannel(channelId: string): Promise<LocalMessage[]> {
-    const records = await pb.collection('messages').getList(1, 20, {
+export async function getMessagesFromChannel(channelId: string): Promise<Message[]> {
+    const records = await pb.collection('messages').getList<
+        RecordModel & Message
+    >(1, 20, {
         filter: `channel = '${channelId}'`
     })
 
-    return records.items.map(({
-        id,
-        content,
-        channelId,
-    }) => ({
-        id,
-        content,
-        channelId,
-        fromSelf: true,
-    }))
+    return records.items;
+}
+
+export async function createMessageToChannel(message: Local<Message>): Promise<void> {
+    await pb.collection('messages').create(
+        message
+    )
 }
