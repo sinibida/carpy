@@ -1,8 +1,10 @@
 <script lang="ts">
   import MessageList from "./MessageList.svelte";
   import MessagePusher from "./MessagePusher.svelte";
-  import { createMessageToChannel, getMessagesFromChannel, isMyId, subscribeToChannel } from "../utils/pocketBasePresenter";
+  import { createMessageToChannel, getMessagesFromChannel, subscribeToChannel } from "../utils/pocketBasePresenter";
   import { onDestroy, onMount } from "svelte";
+  import { loggedUser } from "../../stores/mainStores";
+  import { get } from "svelte/store";
 
   export let channel: Channel;
 
@@ -51,7 +53,7 @@
     {#if loadedMessages}
       <MessageList
       messages={loadedMessages}
-      fromSelfPredicate={(x) => isMyId(x.creator)}
+      fromSelfPredicate={(x) => get(loggedUser)?.id === x.creator}
       />
     {:else}
       Loading...

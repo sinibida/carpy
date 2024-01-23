@@ -3,14 +3,15 @@
   import IndexView from "$lib/components/IndexView.svelte";
   import {title, loggedUser}  from '../stores/mainStores'
   import { onMount } from "svelte";
-  import { getAllChannels, getLoggedUser, logout } from "../lib/utils/pocketBasePresenter";
+  import { getAllChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
   import { goto } from '$app/navigation';
 
   let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
 
   onMount(async () => {
-    if (getLoggedUser() === null) {
+    const user = updateLoggedUser();
+    if (user === null) {
       goto("/login");
       return;
     }

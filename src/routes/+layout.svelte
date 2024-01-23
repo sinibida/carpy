@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import * as ms from '../stores/mainStores';
   import './styles.css'
+  import UserModal from '$lib/components/UserModal.svelte';
 
   let maximized = false;
   let isWindowed = false;
@@ -47,8 +48,6 @@
 <div
 class="g-elevated header"
 >
-  <div class="left">
-  </div>
   <div class="title">
     🍠
     Carpy
@@ -59,15 +58,22 @@ class="g-elevated header"
 
     </div>
   </div>
+  <div class="left">
+    <UserModal/>
+  </div>
   <div class="right">
     {#if isWindowed}
-      <button class="icon-button" on:click={onMinimizeClick}>
+      <button class="g-icon-button" on:click={onMinimizeClick}>
         <i class="mi">minimize</i>
       </button>
-      <button class="icon-button" on:click={onMaximizeClick}>
-        <i class="mi">maximize</i>
+      <button class="g-icon-button" on:click={onMaximizeClick}>
+        {#if maximized}
+          <i class="mi">close_fullscreen</i>
+        {:else}
+          <i class="mi">open_in_full</i>
+        {/if}
       </button>
-      <button class="icon-button" on:click={onCloseClick}>
+      <button class="g-icon-button close-button" on:click={onCloseClick}>
         <i class="mi">close</i>
       </button>
     {/if}
@@ -85,22 +91,8 @@ class="g-elevated header"
     display: flex;
   }
 
-  .icon-button {
-    border: 0;
-    width: 24px;
-    height: 24px;
-    border-radius: 1000px;
-    padding: 0;
-    background: transparent;
-    font-size: 20px;
-    user-select: none;
-    & i {
-      display: block;
-      margin-top: 0px;
-    }
-  }
-  .icon-button:active {
-    background: #fff8;
+  .close-button:hover {
+    color: var(--ui-error)
   }
 
   .header {

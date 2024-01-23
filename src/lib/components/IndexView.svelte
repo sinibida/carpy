@@ -1,7 +1,12 @@
-<script>
-  import { getLoggedUser } from "$lib/utils/pocketBasePresenter";
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { loggedUser } from "../../stores/mainStores";
 
-  let username = getLoggedUser()?.username
+  let username: string | undefined = undefined;
+
+  onMount(() => {
+    loggedUser.subscribe((x) => username = x?.username)
+  })
 </script>
 
 <div class="root">
@@ -11,7 +16,11 @@
   </div>
   <div style="height: 16px"/>
   <div class="welcome">
-  Welcome, {username}!
+    {#if username}
+      Welcome, {username}!
+    {:else}
+      Welcome!
+    {/if}
   </div>
 </div>
 

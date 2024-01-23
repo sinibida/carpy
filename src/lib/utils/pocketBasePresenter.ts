@@ -1,4 +1,6 @@
 import PocketBase, { type AuthModel, type RecordAuthResponse, type RecordModel, type RecordSubscription, type UnsubscribeFunc } from 'pocketbase';
+import { loggedUser } from '../../stores/mainStores';
+import { get } from 'svelte/store';
 
 export const pb = new PocketBase(`http://127.0.0.1:8090`);
 
@@ -25,7 +27,7 @@ export async function createMessageToChannel(message: Local<Message>): Promise<v
     await pb.collection('messages').create(
         {
             ...message,
-            creator: getLoggedUser()!.id
+            creator: get(loggedUser)!.id
         }
     )
 }
@@ -49,6 +51,7 @@ export async function login(username: string, password: string): Promise<RecordA
     try {
         const res = await pb.collection('users').authWithPassword(username, password)
         console.log('login complete:', res);
+        loggedUser.set(pb.authStore.model as User);
         return res;
     } catch (e) {
         console.dir(e)
@@ -56,22 +59,18 @@ export async function login(username: string, password: string): Promise<RecordA
     }
 }
 
-export function getLoggedUser(): User | null {
+export function updateLoggedUser(): User | null {
+    let ret;
     if (pb.authStore.model)
-        return pb.authStore.model as User
+        ret = pb.authStore.model as User
     else
-        return null
-}
-
-export function isMyId(id: string): boolean {
-    const x = getLoggedUser()
-    if (x) {
-        return x.id === id
-    } else {
-        return false;
-    }
+        ret = null
+    
+    loggedUser.set(ret);
+    return ret;
 }
 
 export function logout() {
     pb.authStore.clear()
+    loggedUser.set(null);
 }

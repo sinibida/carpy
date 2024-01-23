@@ -19,6 +19,7 @@ html, body {
 html {
 	--ui-1: #242424;
 	--ui-2: #3d3d3d;
+	--ui-3: #565656;
 	--ui-accent: gold;
 	--ui-error: crimson;
 }
@@ -63,6 +64,18 @@ input {
 }
 
 
+hr {
+	border: 1px solid var(--ui-2);
+}
+
+i.mi {
+	display: inline-block;
+	padding-bottom: 0.08em;
+	font-style: normal;
+	font-family: 'Material Icons', sans-serif;
+	vertical-align:middle;
+}
+
 
 .g-bubble {
 	border: none;
@@ -92,15 +105,30 @@ input {
 	}
 }
 
-hr {
-	border: 1px solid var(--ui-2);
-}
-
 .g-elevated {
     box-shadow: #0008 0px 0px 8px;
 }
 
-i.mi {
-	font-style: normal;
-	font-family: 'Material Icons', sans-serif;
+.g-icon-button {
+  border: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 1000px;
+  padding: 0;
+  background: transparent;
+  font-size: 20px;
+  user-select: none;
+
+  transition: background-color 100ms ease;
+
+  & i.mi {
+	display: block;
+	padding-bottom: 0em;
+  }
+}
+.g-icon-button:hover {
+  background: #fff4;
+}
+.g-icon-button:active {
+  background: #fff8;
 }
