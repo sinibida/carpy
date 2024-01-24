@@ -14,7 +14,8 @@
 
   const createChannelModal: ModalContent = {
     content: `
-    <input name="title" type="text">
+    <label for="title">Channel Title</label>
+    <input id="title" name="title" type="text">
     `,
     header: "Create Channel",
     submitText: 0,
@@ -48,6 +49,7 @@
       if (x.type === 'sumbitted') {
         const createdChannel = await createChannel({
           title: x.value.title,
+          type: 'talkRoom', // TODO
         })
         await userJoinChannel(
           $loggedUser!,

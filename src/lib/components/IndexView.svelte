@@ -9,7 +9,7 @@
   })
 </script>
 
-<div class="root">
+<div class="root g-ui-ghost">
   <div class="foods">
     🍠🥔<br>
     🌾<br>
@@ -32,9 +32,6 @@
     height: 100%;
     flex-direction: column;
     user-select: none;
-
-    opacity: 25%;
-    filter: grayscale();
 
     & .foods {
       font-size: 104px;

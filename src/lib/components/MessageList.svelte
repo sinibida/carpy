@@ -15,12 +15,26 @@
   async function processMessages(messages: Message[]) {
     let lastCreatorId: string | undefined = undefined
     let ret: ProcessedMessage[] = []
+    let cachedUserInfo: {
+      [key in string]: User
+    } = {
+
+    }
     for (const message of messages) {
+      let userInfo: User | null = null;
+
+      if (lastCreatorId !== message.creator) {
+        if (Object.hasOwn(cachedUserInfo, message.creator))
+          userInfo = cachedUserInfo[message.creator]
+        else {
+          userInfo = await getUser(message.creator)
+          cachedUserInfo[message.creator] = Object(userInfo)
+        }
+      }
+
       let procMessage: ProcessedMessage = {
         message: message,
-        userInfo: lastCreatorId !== message.creator ? 
-          await getUser(message.creator) : 
-          null,
+        userInfo
       }
 
       ret.push(procMessage)
@@ -43,6 +57,11 @@
         >
           {message.message.content}
         </MessageBox>
+      {:else}
+        <div class="g-ui-ghost so-quiet">
+          <span style="font-size: 104px">😴</span><br/>
+          So quiet here...
+        </div>
       {/each}
     {/await}
   </div>
@@ -66,4 +85,7 @@
     right: 0px;
     left: 0px;
 	}
+  .so-quiet {
+    text-align: center;
+  }
 </style>

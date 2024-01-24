@@ -101,6 +101,12 @@ i.mi {
 	}
 }
 
+.g-ui-ghost {
+	color: var(--on-ui);
+    opacity: 25%;
+    filter: grayscale();
+}
+
 .g-bubble {
 	border: none;
 	border-radius: 1000px;

@@ -130,10 +130,10 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 8px;
 
       & .sumbit-button {
         align-self: flex-end;
+        margin-top: 16px;
       }
     }
   }

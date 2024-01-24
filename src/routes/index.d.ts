@@ -9,9 +9,12 @@ type Message = {
 
 type MessageContent = string
 
+type ChannelType = 'talkRoom' | 'board'
+
 type Channel = {
     id: string,
     title: string,
+    type: ChannelType
 }
 
 type User = {

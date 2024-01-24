@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "carpy",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "tauri": {
     "allowlist": {
@@ -71,7 +71,7 @@
         "minHeight": 360,
         "minWidth": 480,
         "resizable": true,
-        "title": "Carpy v0.1",
+        "title": "Carpy v0.3",
         "decorations": false,
         "transparent": true
       }

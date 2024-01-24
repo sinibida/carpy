@@ -4,24 +4,26 @@ import { get } from 'svelte/store';
 
 export const pb = new PocketBase(`http://ssh.spaupa-file.com:3950`);
 
-async function processChannnelRecord(record: any) {
-    const {id, title} = record
+function processChannnelRecord(record: any): Channel {
+    const {
+        id, 
+        title, 
+        type
+    } = record
     return {
         id,
         title,
+        type: type || 'talkRoom'
     }
 }
 
-async function processUserRecord(record: any) {
+function processUserRecord(record: any) {
     return record as User
 }
 
 export async function getAllChannels(): Promise<Channel[]> {
     const records = await pb.collection('channels').getFullList({});
-    return records.map(({id, title}) => ({
-        id,
-        title,
-    }))
+    return records.map(processChannnelRecord)
 }
 
 export async function getChannels(channelIds: string[]): Promise<Channel[]> {
