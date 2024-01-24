@@ -28,7 +28,6 @@
   })
 
   async function reloadMessages() {
-    loadedMessages = null
     loadedMessages = await getMessagesFromChannel(
       channel.id
     )
@@ -49,16 +48,14 @@
 </script>
 
 <div class="content">
-  {#key loadedMessages}
-    {#if loadedMessages}
-      <MessageList
-      messages={loadedMessages}
-      fromSelfPredicate={(x) => get(loggedUser)?.id === x.creator}
-      />
-    {:else}
-      Loading...
-    {/if}
-  {/key}
+  {#if loadedMessages}
+    <MessageList
+    messages={loadedMessages}
+    fromSelfPredicate={(x) => get(loggedUser)?.id === x.creator}
+    />
+  {:else}
+    Loading...
+  {/if}
 </div>
 <MessagePusher on:push={onPushListen}/>
 

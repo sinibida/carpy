@@ -12,6 +12,10 @@ async function processChannnelRecord(record: any) {
     }
 }
 
+async function processUserRecord(record: any) {
+    return record as User
+}
+
 export async function getAllChannels(): Promise<Channel[]> {
     const records = await pb.collection('channels').getFullList({});
     return records.map(({id, title}) => ({
@@ -25,6 +29,10 @@ export async function getChannels(channelIds: string[]): Promise<Channel[]> {
     return Promise.all(channelIds.map(async channelId => {
         return processChannnelRecord(await col.getOne(channelId))
     }))
+}
+
+export async function getUser(userId: string) {
+    return await processUserRecord(pb.collection('users').getOne(userId))
 }
 
 export async function getMessagesFromChannel(channelId: string): Promise<Message[]> {

@@ -1,19 +1,50 @@
 <script lang="ts">
   import MessageBox from "./MessageBox.svelte";
+  import { getUser } from "$lib/utils/pocketBasePresenter";
 
   export let fromSelfPredicate: 
     (msg: Message) => boolean = 
     () => false
   export let messages: Message[] = []
+
+  type ProcessedMessage = {
+    userInfo: User | null,
+    message: Message,
+  }
+
+  async function processMessages(messages: Message[]) {
+    let lastCreatorId: string | undefined = undefined
+    let ret: ProcessedMessage[] = []
+    for (const message of messages) {
+      let procMessage: ProcessedMessage = {
+        message: message,
+        userInfo: lastCreatorId !== message.creator ? 
+          await getUser(message.creator) : 
+          null,
+      }
+
+      ret.push(procMessage)
+
+      lastCreatorId = message.creator;
+    }
+    return ret;
+  }
 </script>
 
 <div class="root">
   <div class="message-list">
-    {#each messages as message}
-      <MessageBox fromSelf={fromSelfPredicate(message)}>
-        {message.content}
-      </MessageBox>
-    {/each}
+    {#await processMessages(messages)}
+      Loading...
+    {:then procMessages} 
+      {#each procMessages as message}
+        <MessageBox 
+        fromSelf={fromSelfPredicate(message.message)} 
+        userInfo={message.userInfo}
+        >
+          {message.message.content}
+        </MessageBox>
+      {/each}
+    {/await}
   </div>
 </div>
 

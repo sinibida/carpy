@@ -7,11 +7,19 @@
 
   let value: string;
 
+  function checkPrevent(value: string): boolean {
+    return /^\s*$/.test(value)
+  }
+
+  function preprocessContent(value: string): string {
+    return value.trim()
+  }
+
   function onPush() {
-    if (value === "")
+    if (checkPrevent(value))
       return;
     
-    dispatch('push', value);
+    dispatch('push', preprocessContent(value));
     value = ""
   }
 </script>

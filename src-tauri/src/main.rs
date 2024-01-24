@@ -6,9 +6,11 @@ use tauri::{utils::config::AppUrl, Manager, WindowUrl};
 // HTTP. However, when running tauri dev, we already have a localhost server
 // provided by vite, so don't enable it
 #[cfg(dev)]
-const USE_LOCALHOST_SERVER: bool = false;
+const IS_DEV: bool = true;
 #[cfg(not(dev))]
-const USE_LOCALHOST_SERVER: bool = true;
+const IS_DEV: bool = false;
+
+const USE_LOCALHOST_SERVER: bool = !IS_DEV;
 
 fn main() {
     let port = portpicker::pick_unused_port().expect("failed to find unused port");
@@ -31,6 +33,11 @@ fn main() {
         .setup(move |app| {
             // https://github.com/tauri-apps/tauri/discussions/5377
             let main_window = app.get_window("main").unwrap();
+            if IS_DEV {
+                main_window.set_title(
+                    &format!("{} (DEV)", main_window.title().expect("failed getting title"))
+                ).expect("failed setting title");
+            }
             main_window.eval(&format!("window.location.replace('{}')", window_url.clone().to_string())).expect("Eval Failed");
             Ok(())
         })
