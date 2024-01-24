@@ -37,10 +37,20 @@ export async function getMessagesFromChannel(channelId: string): Promise<Message
     return records.items;
 }
 
-export async function createChannel(channel: Local<Channel>): Promise<void> {
-    await pb.collection('channels').create(
+export async function userJoinChannel(user: User, channelId: string) {
+    const {
+        id, joinedChannels
+    } = user
+    await pb.collection('users').update(id, {
+        joinedChannels: joinedChannels.concat([channelId])
+    })
+}
+
+export async function createChannel(channel: Local<Channel>): Promise<Channel> {
+    const record = await pb.collection('channels').create(
         channel
     )
+    return record as any as Channel
 }
 
 export async function createMessageToChannel(message: Local<Message>): Promise<void> {
@@ -98,7 +108,8 @@ export async function register(
 }
 
 export async function updateLoggedUser(): Promise<User | null> {
-    const authData = await pb.collection('users').authRefresh();
+    if (pb.authStore.isValid)
+        await pb.collection('users').authRefresh();
 
     let ret;
     if (pb.authStore.model)

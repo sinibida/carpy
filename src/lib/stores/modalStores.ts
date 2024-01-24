@@ -2,14 +2,14 @@ import { writable, type Unsubscriber, get } from "svelte/store";
 
 // Will use raw HTML (for content)
 // TODO: need sanitizing
-type ModalContent = {
+export type ModalContent = {
     content: string,
     header: string,
     submitText?: string | number | undefined,
 }
 
-type ModalResultType = 'sumbitted' | 'closed'
-type ModalResult = {
+export type ModalResultType = 'sumbitted' | 'closed'
+export type ModalResult = {
     type: ModalResultType,
     value: any,
 }

@@ -4,13 +4,21 @@
   import ModalView from "$lib/components/ModalView.svelte";
   import {title, loggedUser}  from '../lib/stores/mainStores'
   import { onMount } from "svelte";
-  import { createChannel, getAllChannels, getChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
+  import { createChannel, getAllChannels, getChannels, logout, updateLoggedUser, userJoinChannel } from "../lib/utils/pocketBasePresenter";
   import { goto } from '$app/navigation';
   import Sidebar from "$lib/components/Sidebar.svelte";
-  import { currentModal, showModal } from "$lib/stores/modalStores";
+  import { currentModal, showModal, type ModalContent } from "$lib/stores/modalStores";
 
   let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
+
+  const createChannelModal: ModalContent = {
+    content: `
+    <input name="title" type="text">
+    `,
+    header: "Create Channel",
+    submitText: 0,
+  }
 
   onMount(async () => {
     const user = await updateLoggedUser();
@@ -36,17 +44,16 @@
   }
 
   function onAddChannelClicked() {
-    showModal({
-      content: `
-      <input name="title" type="text">
-      `,
-      header: "Create Channel",
-      submitText: 0,
-    }).then(async (x) => {
+    showModal(createChannelModal).then(async (x) => {
       if (x.type === 'sumbitted') {
-        await createChannel({
+        const createdChannel = await createChannel({
           title: x.value.title,
         })
+        await userJoinChannel(
+          $loggedUser!,
+          createdChannel.id
+        )
+        await updateLoggedUser();
         await reloadChannels()
       }
     })
