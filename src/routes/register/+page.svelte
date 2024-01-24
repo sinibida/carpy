@@ -1,25 +1,27 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { login } from '../../lib/utils/pocketBasePresenter';
-  import { loggedUser, title } from '../../lib/stores/mainStores';
-  import { onMount } from 'svelte';
+  import { login, register } from '../../lib/utils/pocketBasePresenter';
+  import { loggedUser } from '../../lib/stores/mainStores';
 
   let username: string;
   let password: string;
+  let email: string;
+  let confirmPassword: string;
   let loggingIn: boolean = false;
   let loginError: unknown | null = null;
 
   $: loginDisplay = getLoginDisplay(loginError)
 
-  onMount(() => {
-    $title = "Login"
-  })
-
   async function onSubmit(event: SubmitEvent) {
+    
     loggingIn = true
     try {
-      const res = await login(username, password)
-      goto('/')
+      if (password !== confirmPassword) {
+        loginError = "The password and the confirmation is not same. Please check your input again."
+        return;
+      }
+      const res = await register(username, email, password, confirmPassword)
+      goto('/login')
     } catch (e) {
       loginError = e;
     } finally {
@@ -50,7 +52,7 @@
       </div>
       <div style="height: 16px"/>
     {/if}
-    <h1>Login</h1>
+    <h1>Register</h1>
     <hr>
     <div style="height: 16px"/>
     <form class="login-form" on:submit={onSubmit}>
@@ -60,13 +62,22 @@
       </div>
       <div style="height: 16px"/>
       <div class="form-field">
+        <label for="email">Email</label>
+        <input required id="email" type="email" bind:value={email}/>
+      </div>
+      <div style="height: 16px"/>
+      <div class="form-field">
         <label for="password">Password</label>
         <input required id="password" type="password" bind:value={password}/>
       </div>
       <div style="height: 16px"/>
+      <div class="form-field">
+        <label for="confirm-password">Confirm Password</label>
+        <input required id="confirm-password" type="password" bind:value={confirmPassword}/>
+      </div>
+      <div style="height: 16px"/>
       <div class="login-row">
-        <a href="/register">Register</a>
-        <input type="submit" class="g-bubble login" value="Login" disabled={loggingIn}/>
+        <input type="submit" class="g-bubble login" value="Register" disabled={loggingIn}/>
       </div>
     </form>
   </div>

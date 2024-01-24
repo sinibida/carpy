@@ -87,6 +87,8 @@ class="g-elevated header"
     background-color: var(--ui-1);
     display: flex;
     position: relative;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .close-button:hover {

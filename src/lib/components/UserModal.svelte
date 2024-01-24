@@ -10,6 +10,11 @@
     goto("/login");
     expand = false;
   }
+
+  function onLogInClick() {
+    goto("/login");
+    expand = false;
+  }
 </script>
 
 <div class="root">
@@ -28,10 +33,17 @@
     {/if}</i>
   </button>
   <div class="dropdown g-elevated" class:active={expand}>
-    <button on:click={onLogOutClick}>
-      <i class="mi">logout</i>
-      Log Out
-    </button>
+    {#if $loggedUser}
+      <button on:click={onLogOutClick}>
+        <i class="mi">logout</i>
+        Log Out
+      </button>
+    {:else}
+      <button on:click={onLogInClick}>
+        <i class="mi">login</i>
+        Log In
+      </button>
+    {/if}
   </div>
 </div>
 

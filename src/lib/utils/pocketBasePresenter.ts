@@ -2,14 +2,28 @@ import PocketBase, { type AuthModel, type RecordAuthResponse, type RecordModel, 
 import { loggedUser } from '../stores/mainStores';
 import { get } from 'svelte/store';
 
-export const pb = new PocketBase(`http://127.0.0.1:8090`);
+export const pb = new PocketBase(`http://ssh.spaupa-file.com:3950`);
+
+async function processChannnelRecord(record: any) {
+    const {id, title} = record
+    return {
+        id,
+        title,
+    }
+}
 
 export async function getAllChannels(): Promise<Channel[]> {
     const records = await pb.collection('channels').getFullList({});
     return records.map(({id, title}) => ({
         id,
         title,
-        messages: []
+    }))
+}
+
+export async function getChannels(channelIds: string[]): Promise<Channel[]> {
+    const col = pb.collection('channels')
+    return Promise.all(channelIds.map(async channelId => {
+        return processChannnelRecord(await col.getOne(channelId))
     }))
 }
 
@@ -18,7 +32,7 @@ export async function getMessagesFromChannel(channelId: string): Promise<Message
         RecordModel & Message
     >(1, 20, {
         filter: `channel = '${channelId}'`
-    })
+    }) // TODO: Handle paging
 
     return records.items;
 }
@@ -52,11 +66,8 @@ export async function subscribeToChannel(
 }
 
 export async function login(username: string, password: string): Promise<RecordAuthResponse<RecordModel>> {
-    console.log('login:', username, password)
-    import.meta.env
     try {
         const res = await pb.collection('users').authWithPassword(username, password)
-        //console.log('login complete:', res);
         loggedUser.set(pb.authStore.model as User);
         return res;
     } catch (e) {
@@ -65,7 +76,30 @@ export async function login(username: string, password: string): Promise<RecordA
     }
 }
 
-export function updateLoggedUser(): User | null {
+export async function register(
+    username: string, 
+    email: string, 
+    password: string, 
+    passwordConfirm: string,
+): Promise<RecordModel> {
+    try {
+        return await pb.collection('users').create(
+            {
+                username,
+                email,
+                password,
+                passwordConfirm,
+            }
+        )
+    } catch (e) {
+        //console.dir(e)
+        throw e;
+    }
+}
+
+export async function updateLoggedUser(): Promise<User | null> {
+    const authData = await pb.collection('users').authRefresh();
+
     let ret;
     if (pb.authStore.model)
         ret = pb.authStore.model as User

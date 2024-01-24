@@ -4,7 +4,7 @@
   import ModalView from "$lib/components/ModalView.svelte";
   import {title, loggedUser}  from '../lib/stores/mainStores'
   import { onMount } from "svelte";
-  import { createChannel, getAllChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
+  import { createChannel, getAllChannels, getChannels, logout, updateLoggedUser } from "../lib/utils/pocketBasePresenter";
   import { goto } from '$app/navigation';
   import Sidebar from "$lib/components/Sidebar.svelte";
   import { currentModal, showModal } from "$lib/stores/modalStores";
@@ -13,7 +13,7 @@
   let currentChannel: Channel | null = null;
 
   onMount(async () => {
-    const user = updateLoggedUser();
+    const user = await updateLoggedUser();
     if (user === null) {
       goto("/login");
       return;
@@ -22,7 +22,11 @@
   })
 
   async function reloadChannels() {
-    channels = await getAllChannels();
+    console.log($loggedUser?.joinedChannels)
+    if ($loggedUser)
+      channels = await getChannels($loggedUser.joinedChannels);
+    else
+      channels = []
   }
 
   function onChangeChannelClicked(event: CustomEvent<Channel | null>) {
