@@ -23,3 +23,14 @@ type User = {
     email: string,
     joinedChannels: string[],
 }
+
+type ChannelContext = {
+    loadMoreMessages: () => Promise<void>;
+    push: (message: Omit<Local<Message>, 'channel'>) => Promise<Message>;
+    subscribe: (fn: (value: ChannelContextCarry) => void) => () => void;
+}
+
+type ChannelContextCarry = {
+    noMoreMessage: boolean,
+    loadedMessages: Message[],
+}

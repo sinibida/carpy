@@ -34,13 +34,20 @@ export async function getChannels(channelIds: string[]): Promise<Channel[]> {
 }
 
 export async function getUser(userId: string) {
-    return await processUserRecord(pb.collection('users').getOne(userId))
+    return processUserRecord(await pb.collection('users').getOne(userId, {
+        requestKey: userId
+    }))
 }
 
-export async function getMessagesFromChannel(channelId: string): Promise<Message[]> {
+export async function getMessagesFromChannel(
+    channelId: string,
+    page: number,
+    perPage: number,
+): Promise<Message[]> {
     const records = await pb.collection('messages').getList<
         RecordModel & Message
-    >(1, 20, {
+    >(page, perPage, {
+        sort: `-created`,
         filter: `channel = '${channelId}'`
     }) // TODO: Handle paging
 
@@ -63,13 +70,13 @@ export async function createChannel(channel: Local<Channel>): Promise<Channel> {
     return record as any as Channel
 }
 
-export async function createMessageToChannel(message: Local<Message>): Promise<void> {
-    await pb.collection('messages').create(
+export async function createMessageToChannel(message: Local<Message>): Promise<Message> {
+    return await pb.collection('messages').create(
         {
             ...message,
             creator: get(loggedUser)!.id
         }
-    )
+    ) as Message
 }
 
 export async function subscribeToChannel(
@@ -77,8 +84,6 @@ export async function subscribeToChannel(
     callback: (data: RecordSubscription<Message>) => void
 ): Promise<() => Promise<void>> {
     return await pb.collection('messages').subscribe<Message>('*', (e) => {
-        console.dir(e)
-        console.log(e.record.channel, channelId)
         if (e.record.channel == channelId) {
             callback(e)
         }

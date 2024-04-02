@@ -31,7 +31,6 @@
     justify-content: center;
     height: 100%;
     flex-direction: column;
-    user-select: none;
 
     & .foods {
       font-size: 104px;

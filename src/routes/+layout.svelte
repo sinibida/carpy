@@ -1,62 +1,59 @@
 <script lang="ts">
-  import { appWindow } from '@tauri-apps/api/window';
-  import { onMount } from 'svelte';
-  import * as ms from '../lib/stores/mainStores';
-  import './styles.css'
-  import UserModal from '$lib/components/UserModal.svelte';
-  import { isWindowed } from '$lib/utils';
+  import { appWindow } from "@tauri-apps/api/window";
+  import { onMount } from "svelte";
+  import * as ms from "../lib/stores/mainStores";
+  import "./styles.css";
+  import UserModal from "$lib/components/UserModal.svelte";
+  import { isWindowed } from "$lib/utils";
 
   let maximized = false;
   let title: string | null = null;
-  $: onMaximizedChange(maximized)
+  $: onMaximizedChange(maximized);
 
   onMount(async () => {
-    await appWindow.listen('tauri://resize', async () => {
-      maximized = await appWindow.isMaximized()
-    })
+    if (isWindowed()) {
+      await appWindow.listen("tauri://resize", async () => {
+        maximized = await appWindow.isMaximized();
+      });
+    }
 
     ms.title.subscribe((x) => {
       title = x;
-    })
-  })
+    });
+  });
 
   async function onCloseClick() {
-    await appWindow.close()
-  } 
+    await appWindow.close();
+  }
 
   async function onMaximizeClick() {
-    await appWindow.toggleMaximize()
-  } 
+    await appWindow.toggleMaximize();
+  }
 
   async function onMinimizeClick() {
-    await appWindow.minimize()
-  } 
+    await appWindow.minimize();
+  }
 
   function onMaximizedChange(maximized: boolean) {
     if (maximized) {
-      document.querySelector('html')?.classList.remove('rounded')
+      document.querySelector("html")?.classList.remove("rounded");
     } else {
-      document.querySelector('html')?.classList.add('rounded')
+      document.querySelector("html")?.classList.add("rounded");
     }
   }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
-class="g-elevated header"
->
+<div class="g-elevated header">
   <div class="title">
-    🍠
-    Carpy
+    🍠 Carpy
     {#if title}
       ({title})
     {/if}
-    <div data-tauri-drag-region class="dragging-area">
-
-    </div>
+    <div data-tauri-drag-region class="dragging-area"></div>
   </div>
   <div class="left">
-    <UserModal/>
+    <UserModal />
   </div>
   <div class="right">
     {#if isWindowed()}
@@ -78,7 +75,7 @@ class="g-elevated header"
 </div>
 
 <main>
-  <slot/>
+  <slot />
 </main>
 
 <style>
@@ -92,11 +89,11 @@ class="g-elevated header"
   }
 
   .close-button:hover {
-    color: var(--ui-error)
+    color: var(--ui-error);
   }
 
   .header {
-		z-index: 1000;
+    z-index: 1000;
     position: relative;
     background-color: var(--ui-2);
     height: 32px;
@@ -149,3 +146,4 @@ class="g-elevated header"
     }
   }
 </style>
+

@@ -1,6 +1,10 @@
 <script lang="ts">
-  export let userInfo: User | null = null;
+  export let isDuplicate: boolean;
+  export let userInfo: User | undefined;
   export let fromSelf: boolean;
+
+  let showUserInfo: boolean;
+  $: showUserInfo = !isDuplicate;
 </script>
 
 <div
@@ -8,10 +12,10 @@ class="root"
 class:self={fromSelf}
 class:others={!fromSelf}
 >
-  {#if userInfo}
+  {#if showUserInfo}
     <div class="pfp">
       <div class="pfp-placeholder">
-        {userInfo.username[0].toUpperCase()}
+        {userInfo ? userInfo.username[0].toUpperCase() : "?"}
       </div>
     </div>
   {:else}
@@ -20,9 +24,9 @@ class:others={!fromSelf}
   {/if}
 
   <div class="content">
-    {#if userInfo}
+    {#if showUserInfo}
       <div class="username">
-        {userInfo.username}
+        {userInfo ? userInfo.username : "Loading..."}
       </div>
     {/if}
     <div class="container">

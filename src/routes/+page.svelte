@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ChannelView from "$lib/components/ChannelView.svelte";
+  import MessageListView from "$lib/components/MessageListView.svelte";
   import IndexView from "$lib/components/IndexView.svelte";
   import ModalView from "$lib/components/ModalView.svelte";
   import {title, loggedUser}  from '../lib/stores/mainStores'
@@ -8,6 +8,7 @@
   import { goto } from '$app/navigation';
   import Sidebar from "$lib/components/Sidebar.svelte";
   import { currentModal, showModal, type ModalContent } from "$lib/stores/modalStores";
+  import ChannelContextProvider from "$lib/components/ChannelContextProvider.svelte";
 
   let channels: Channel[] | null = null
   let currentChannel: Channel | null = null;
@@ -79,7 +80,9 @@
 <section class="content">
   {#key currentChannel}
   {#if currentChannel}
-  <ChannelView channel={currentChannel}/>
+  <ChannelContextProvider channel={currentChannel}>
+    <MessageListView/>
+  </ChannelContextProvider>
   {:else}
   <IndexView/>
   {/if}
